@@ -1,0 +1,303 @@
+----------------------------------------------------------------
+------------------ ODIMODI, CASE 0 -------------------------------
+------------------adjust to appropriate-----------------------------
+
+RUNSPEC
+-- -------------------------------------------------------------
+
+TITLE
+  ODIMODI - CASE 1
+DIMENS
+  50 70 12 /
+GAS
+WATER
+
+FIELD
+
+START
+   1 'JAN' 2021 /
+
+WELLDIMS
+-- Item 1: maximum number of wells in the model
+--     - there are two wells in the problem; injector and producer
+-- Item 2: maximum number of grid blocks connected to any one well
+--     - must be two as both wells are located at two grid blocks
+-- Item 3: maximum number of groups in the model
+--     - we are dealing with only one 'group'
+-- Item 4: maximum number of wells in any one group
+--     - there must be two wells in a group as there are two wells in total
+   10 1000 2 5 /
+
+TABDIMS
+-- The max number of saturation and pressure nodes in the PROPS-tables
+-- exceeds the default -> item 3 and 4 in TABDIMS must be changed
+   1* 1* 30 30 /
+
+EQLDIMS
+/
+
+
+UNIFOUT
+
+GRID
+
+-- The INIT keyword is used to request an .INIT file. The .INIT file
+-- is written before the simulation actually starts, and contains grid
+-- properties and saturation tables as inferred from the input
+-- deck. There are no other keywords which can be used to configure
+-- exactly what is written to the .INIT file.
+INIT
+
+-- ---------------------------------------------------------------
+-- The values in this section are retrieved from table 2 
+-- and figure 1 in Kenyon & Behie
+NOECHO
+DX 
+-- There are in total 35000 cells with length 100ft in x-direction  
+  42000*100 /
+DY
+-- There are in total 35000 cells with length 100ft in y-direction
+  42000*100 /
+DZ
+-- The layers are 60 ft thick
+  42000*5 /
+
+TOPS
+-- The depth of the top of each grid block
+--  81*7315 81*7345 81*7375 81*7425 /
+  500*12000 1000*12010 1000*12020 500*12030 500*12040 / 
+
+NTG
+  42000*1.0 /
+  
+PORO
+-- Constant porosity of 0.3 throughout all 35000 grid cells
+    42000*0.2 /
+
+PERMX
+-- The layers have horizontal (meaning x- and y-direction) permeability 
+-- of 300mD, 1mD, 300mD, respectively, from top to bottom layer.
+  3500*100 3500*200 3500*300 3500*200 3500*100
+  7000*10
+  3500*100 3500*200 3500*300 3500*200 3500*100 3500*10 /
+
+COPY 
+  PERMX   PERMY   6* /
+  PERMX   PERMZ   6* /
+/
+
+MULTIPLY
+  PERMZ   0.1  6* /
+/
+
+ECHO
+
+PROPS
+-- -------------------------------------------------------------
+
+ROCK
+-- Item 1: reference pressure (psia)
+-- Item 2: rock compressibility (psi^{-1})
+
+-- Using values from table 2 in Kenyon & Behie:
+    5500 4e-6 /
+
+SGFN
+-- Item 1: gas saturation
+-- Item 2: gas relative permeability
+-- Item 3: Pcgo: water-gas capilarry pressure
+    0 0 0.9 0
+    0.2 0.0002  0.7664  0
+    0.245309  0.0004  0.7443  0
+    0.261989  0.001 0.6907  0
+    0.303091  0.0044  0.5671  0
+    0.368269  0.0191  0.3962  0
+    0.435026  0.0519  0.2528  0
+    0.486387  0.094 0.1643  0
+    0.522283  0.1339  0.1137  0
+    0.550683  0.1725  0.0803  0
+    0.575342  0.2115  0.0559  0
+    0.599076  0.2542  0.0367  0
+    0.621294  0.2991  0.0223  0
+    0.642171  0.3458  0.012 0
+    0.658984  0.3868  0.0061  0
+    0.671123  0.4183  0.003 0
+    0.679268  0.4403  0.0015  0
+    0.684963  0.4562  0.0008  0
+    0.688893  0.4674  0.0004  0
+    0.692025  0.4765  0.0002  0
+    0.694641  0.4841  0.0001  0
+    0.696976  0.491 0 0
+    0.699099  0.4973  0 0
+    0.7 1 0 0
+/
+-------------------- START OF PVTsim GENERATED VALUES -------------------------
+DENSITY
+-- OilDens   WaterDens    GasDens
+-- lb/ft3     lb/ft3      lb/ft3
+   43.33       62.37      0.05850 /
+--
+PVTW
+--     RefPres        Bw          Cw           Vw         dVw
+--       psia       rb/stb       1/psia        cP        1/psia
+       5500      1.02629    0.30698E-05   0.31107    0.59410E-05 /
+--PRESSURE   VAPORIZED      GAS FVF          GAS
+--   Pg       OGR  Rv         Bg          VISCOSITY
+--  psia     STB/MSCF       RB/MSCF          cP
+------------------------------------------------------------
+PVTG
+  500.0     0.0382886993       6.419987     0.012999  /
+ 1000.0     0.0314227763       3.007969     0.014122  /
+ 1500.0     0.0357629796       1.922602     0.015848  /
+ 2000.0     0.0473304978       1.408289     0.018550  /
+ 2500.0     0.0679314005       1.123337     0.022691  /
+ 3000.0     0.1043958616       0.959755     0.029087  /
+ 3427.6     0.1670518252       0.893267     0.038650  /
+ 3500.0     0.1670518252       0.884653     0.039158  /
+ 5500.0     0.1670518252       0.834785     0.042494
+            0.1043958616       0.809080     0.035345
+            0.0679314005       0.798204     0.031649
+            0.0473304978       0.792752     0.029766
+            0.0357629796       0.789094     0.028868
+            0.0314227763       0.786258     0.028754
+            0.0000000000       0.773146     0.026778  /
+/
+
+
+-------------------- END OF PVTsim GENERATED VALUES -------------------------
+
+
+SOLUTION
+
+EQUIL
+-- Item 1: datum depth (ft)
+--     - Datum depth is at 1200ft (table 2, Kenyon & Behie)
+-- Item 2: pressure at datum depth (psia)
+--     - This is 3550psia (table 2, Kenyon & Behie)
+-- Item 3: depth of water-oil contact
+--     - See comment under item 5
+-- Item 4: oil-water capillary pressure at the water-oil contact 
+--     - Cap. pres. at gas-water contact is 0 (table 2, Kenyon & Behie)
+--     - Cap. pres. for gas-oil is assumed 0 (table 2, Kenyon & Behie)
+--     - This means oil-water cap. pres. is 0 at contact
+-- Item 5: depth of gas-oil contact (ft)
+--     - Since all oil is initially contained in the gas phase,
+--       we can set item 5 equal to item 3, which must be
+--       set to the gas-water contact (since we have assumed no oil)
+--       The gas-water contact is at 7500ft (table 2, Kenyon & Behie)
+-- Item 6: gas-oil capillary pressure at gas-oil contact (psi)
+--     - Kenyon & Behie say this is assumed to be zero
+-- Item 7: RSVD-table
+-- Item 8: RVVD-table
+-- Item 9: must set to 0 as only this is supported in OPM
+
+-- Item #: 1  2    3    4 5    6 7 8 9
+       12050 5500 12080 0 1* 0 0 0 0 /
+--                   
+SUMMARY
+
+WOPR
+  'G1'
+  'G2'
+/
+
+FOPR
+
+WOPT
+  'G1'
+  'G2'
+/
+
+FOPT
+
+
+-- In order to compare Eclipse with Flow:
+WBHP
+  'G1'
+  'G2'
+/
+WGIR
+  'G1'
+  'G2'
+/
+
+WGPR
+  'G1'
+  'G2'
+/
+
+WGPT
+  'G1'
+  'G2'
+/
+
+WWIR
+  'G1'
+  'G2'
+/
+
+WWPR
+  'G1'
+  'G2'
+/
+
+SCHEDULE
+
+RPTRST
+  'BASIC=4' /
+
+WELSPECS
+-- Item #: 1    2 3 4 5   6
+   'G1'  'HZ' 10 20 12130 'GAS' /
+   'G2'  'HZ' 30 20 12130 'GAS' /
+/
+-- The coordinates in item 3-4 
+-- Ref. manual says the top-most perforation of the well is the
+-- recommended value for datum depth for BHP (item 5), which are the values 
+-- that are entered above
+-- Both oil and gas are produced, and 'GAS' has been chosen as preferred
+-- phase (item 6) for PROD. All graphs will be identical if choosing OIL
+
+COMPDAT
+-- Item #: 1  2 3 4 5  6  7  8  9
+     'G1' 10 20 1 12 'OPEN'  1* 1* 2 /
+     'G2' 30 20 1 12 'OPEN'  1* 1* 2 /
+/
+-- The coordinates in item 2-5 
+-- Item 9 is the well bore internal diameter, 
+-- the radius is given to be 1ft
+
+
+WCONPROD
+-- Item #: 1    2  3    6       9
+      'G1' 'OPEN' 'GRAT' 2* 25000 2* 1000 /
+      'G2' 'OPEN' 'GRAT' 2* 25000 2* 1000 /
+/
+-- controlled by a separator gas rate of 6200Mscf per day (item 6)
+-- min BHP is 1000psi (item 9)
+
+TSTEP
+-- first year:
+7*52.14285714
+-- next nine years:
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 /
+
+TSTEP
+-- Advance the simulator once a month for next 5 years
+-- because Kenyon & Behie say models are to run for a total of 15 years
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 
+31 28 31 30 31 30 31 31 30 31 30 31 /
+
+
+END
